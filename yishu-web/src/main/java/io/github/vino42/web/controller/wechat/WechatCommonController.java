@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,10 +41,12 @@ import java.util.stream.Collectors;
 public class WechatCommonController {
     @Autowired
     ISysRegionGeoService sysRegionGeoService;
+    @Value("${miniapp.check.flag:false}")
+    private String flag;
 
     @PostMapping(value = "/check")
     public ServiceResponseResult tableBar() {
-        return ResultMapper.ok(true);
+        return ResultMapper.ok(Boolean.valueOf(flag));
     }
 
     @PostMapping(value = "/cities")
