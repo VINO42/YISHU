@@ -26,4 +26,4 @@ BTU Capstone Project
         * 将根目录下的yishu-sql.zip1重命名为yishu-sql.zip并解压缩,导入到mysql8
     * 本地docker运行minio，并将minio的accessKey和secret在项目的dev的配置中修改
     * 本地docker运行redis，并将项目中的`application-dev.properties` 中的redis的配置项改为本地
-    * 导入yishu-web项目到idea，运行SpringBoot main方法，profile参数填dev
+    * 导入yishu-web项目到idea，运行SpringBoot main方法，profile参数填dev `-Djasypt.encryptor.password=thereisnospoon`
