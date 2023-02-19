@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysRoleEntity">
+        <id column="id" property="id"/>
+        <result column="role_code" property="roleCode"/>
+        <result column="role_name" property="roleName"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, role_code, role_name, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <select id="getByUserId" resultType="io.github.vino42.domain.dto.ResAllocateListDto"
+            parameterType="java.lang.String">
+        SELECT r1.id        as id,
+               r1.role_name as name
+        FROM sys_role r1
+                 LEFT JOIN rel_user_group_role ur ON r1.id = ur.role_id
+                 LEFT JOIN rel_user_user_group uug ON uug.user_group_id = ur.user_group_id
+        WHERE r1.statu = 1
+          AND ur.statu = 1
+          AND uug.statu = 1
+          AND uug.user_id = #{userId}
+    </select>
+    <select id="getRolesForUser" resultType="java.lang.String"
+            parameterType="java.lang.Long">
+        SELECT r1.id
+        FROM sys_role r1
+                 LEFT JOIN rel_user_group_role ur ON r1.id = ur.role_id
+                 LEFT JOIN rel_user_user_group uug ON uug.user_group_id = ur.user_group_id
+        WHERE r1.statu = 1
+          AND ur.statu = 1
+          AND uug.statu = 1
+          AND uug.user_id = #{userId}
+    </select>
+    <select id="getByGroupId" resultType="io.github.vino42.domain.dto.ResAllocateListDto"
+            parameterType="java.lang.String">
+        SELECT r1.id        as id,
+               r1.role_name as name
+        FROM sys_role r1
+                 LEFT JOIN rel_user_group_role ur ON r1.id = ur.role_id
+         WHERE r1.statu = 1
+          AND ur.statu = 1
+           AND ur.user_group_id = #{groupId}
+          GROUP  BY r1.id
+
+    </select>
+    <select id="getRoleByCode" resultType="io.github.vino42.domain.entity.SysRoleEntity"
+            parameterType="java.lang.String">
+        select * from sys_role where statu=1 and role_code=#{roleCode}
+    </select>
+    <select id="getRolesByUserGroupForUser" resultType="java.lang.String" parameterType="java.lang.Long">
+        SELECT r1.role_id
+        FROM rel_user_group_role  r1
+
+        WHERE r1.statu = 1
+
+          AND r1.user_group_id = #{userGroupId}
+
+    </select>
+</mapper>

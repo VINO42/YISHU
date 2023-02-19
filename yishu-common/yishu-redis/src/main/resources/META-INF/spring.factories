@@ -1,0 +1,7 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    io.github.vino42.redis.configuration.RedissionConfiguration,\
+    io.github.vino42.redis.configuration.RedisTemplateConfig,\
+    io.github.vino42.redis.idemopotent.config.IdempotentAutoConfiguration,\
+    io.github.vino42.redis.lock.configuration.LockAutoConfiguration,\
+    io.github.vino42.redis.ratelimit.config.RateLimitConfig,\
+    io.github.vino42.redis.ratelimit.aspect.LimitAspect

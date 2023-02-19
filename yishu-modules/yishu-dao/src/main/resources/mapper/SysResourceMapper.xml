@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysResourceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysResourceEntity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="front_path" property="frontPath"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="url" property="url"/>
+        <result column="platform_" property="platformType"/>
+        <result column="resource_" property="resourceType"/>
+        <result column="level_code" property="levelCode"/>
+        <result column="sort" property="sort"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="statu" property="statu"/>
+        <result column="version_stamp" property="versionStamp"/>
+
+        <result column="component" property="component"/>
+        <result column="icon" property="icon"/>
+        <result column="is_link" property="isLink"/>
+        <result column="is_hide" property="isHide"/>
+        <result column="is_affix" property="isAffix"/>
+        <result column="is_keepalive" property="isKeepalive"/>
+        <result column="is_full" property="isFull"/>
+        <result column="redirect" property="redirect"/>
+        <result column="title" property="title"/>
+
+<!--        <result column="button_name" property="buttonName"/>-->
+
+    </resultMap>
+
+
+    <resultMap id="getPlatformResourcesResultMap"
+               type="io.github.vino42.domain.dto.ResourceTreeDto">
+        <result column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="path" property="path"/>
+        <result column="sort" property="sort"/>
+        <result column="level_code" property="levelCode"/>
+        <result column="fron_path" property="path"/>
+        <result column="name" property="name"/>
+        <result column="component" property="component"/>
+
+        <association property="meta"
+                     javaType="io.github.vino42.domain.dto.Meta">
+            <result column="icon" property="icon"/>
+            <result column="title" property="title"/>
+            <result column="is_link" property="isLink"/>
+            <result column="is_hide" property="isHide"/>
+            <result column="if_full" property="isFull"/>
+            <result column="is_affix" property="isAffix"/>
+            <result column="is_keepalive" property="isKeepAlive"/>
+
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, front_path, parent_id, url, platform_type, resource_type, level_code, sort, create_time, update_time, create_by, create_name, update_by, update_name, statu, version_stamp,
+    component, icon, is_link, is_hide, is_affix, is_keepalive, redirect, title, is_full/*, button_name*/
+    </sql>
+    <sql id="ResourceTree_Column_List">
+        id, name, front_path as path, parent_id, url, platform_type, resource_type, level_code, sort, create_time, update_time, create_by, create_name, update_by, update_name, statu, version_stamp,
+    component, icon, is_link, is_hide, is_affix, is_keepalive, redirect, title, is_full
+    </sql>
+    <select id="getPlatformResources" resultMap="getPlatformResourcesResultMap">
+        select
+        <include refid="ResourceTree_Column_List"/>
+        from sys_resource where statu=1 and resource_type=2 order by sort asc
+    </select>
+    <select id="getByResourceUrl" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(0)
+        from sys_resource
+        where statu = 1
+          and resource_type = 1
+          and url = #{url}
+    </select>
+    <select id="getResourceByType" resultType="io.github.vino42.domain.entity.SysResourceEntity"
+            parameterType="java.lang.Integer">
+        select *
+        from sys_resource
+        where resource_type = #{type}
+          and statu = 1
+    </select>
+    <select id="getButtonPerms" resultType="io.github.vino42.domain.dto.ButtonPerms"
+            parameterType="java.lang.Long">
+        select r.component as component, r.name AS button
+        from sys_resource r
+                 left join
+             rel_permission_resource rpr on rpr.resource_id = r.id
+                 left join
+             rel_permission_group_permission rpgp on rpgp.permission_id = rpr.permission_id
+                 left join
+             rel_role_permission_group rrpg on rrpg.permission_group_id = rpgp.permission_group_id
+                 left join
+             rel_user_group_role rugr on rugr.role_id = rrpg.role_id
+                 left join
+             rel_user_user_group ruug on ruug.user_group_id = rugr.user_group_id
+        where 1=1
+          AND ruug.user_id = 1
+          AND r.statu = 1
+          AND rpr.statu = 1
+          AND rpgp.statu = 1
+          AND rrpg.statu = 1
+          AND rugr.statu = 1
+          AND ruug.statu = 1
+          AND r.resource_type = 3
+    </select>
+    <select id="selectByParentIdAndComponentAndLevelCodeAndTitle" resultType="java.lang.Integer">
+        select count(*) from sys_resource
+        where parent_id=#{parentId} and component=#{component} and level_code=#{levelCode} and title=#{title} and statu=1
+    </select>
+    <select id="getReouscesByRoleId" resultType="io.github.vino42.domain.dto.ResAllocateListDto"
+            parameterType="java.lang.String">
+        SELECT
+            r.id AS id,
+            r.`name` AS NAME
+        FROM
+            rel_role_permission_group rrpg
+                LEFT JOIN rel_permission_group_permission pgp ON rrpg.permission_group_id = pgp.permission_group_id
+                LEFT JOIN rel_permission_resource pr ON pr.permission_id = pgp.permission_id
+                LEFT JOIN sys_resource r ON r.id = pr.resource_id
+        WHERE
+            rrpg.statu = 1
+          AND pgp.statu = 1
+          AND pr.statu = 1
+          AND r.statu =1
+          AND rrpg.role_id=#{roleId}
+
+    </select>
+</mapper>

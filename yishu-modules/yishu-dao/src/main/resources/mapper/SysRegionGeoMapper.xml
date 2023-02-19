@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysRegionGeoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysRegionGeoEntity">
+        <result column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="deep" property="deep"/>
+        <result column="name" property="name"/>
+        <result column="ext_path" property="extPath"/>
+        <result column="geo" property="geo"/>
+        <result column="polygon" property="polygon"/>
+        <result column="pinyin" property="pinyin"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, pid, deep, name, ext_path, geo, polygon, pinyin
+    </sql>
+    <select id="getCities" resultType="io.github.vino42.domain.entity.SysRegionGeoEntity">
+        SELECT
+            rg.id AS id,
+            rg.`name` AS name,
+            rg.pinyin AS pinyin
+        FROM
+            sys_region_geo rg
+        WHERE
+            rg.deep = '1'
+        ORDER BY
+            CONVERT(rg.pinyin USING GBK) ASC
+    </select>
+    <select id="getCityCodeByLoLa" resultType="io.github.vino42.domain.entity.SysRegionGeoEntity">
+        SELECT
+            id,
+            name
+        FROM
+            sys_region_geo
+        WHERE
+            deep =1
+          AND
+                ST_Intersects (
+                        polygon,
+
+                        ST_GeomFromText ( concat('POINT(',#{longitude},' ',#{latitude},')'), 0 ))= 1
+
+    </select>
+</mapper>

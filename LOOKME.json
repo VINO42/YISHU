@@ -1,0 +1,29 @@
+{
+  "description": "同城易书后端项目工程",
+  "children": [
+    {
+      "name": "yishu-bootstrap",
+      "description": "项目顶级依赖BOM"
+    },
+    {
+      "name": "yishu-common",
+      "type": "Link",
+      "target": "yishu-common/LOOKME.json",
+      "description": "公共组件依赖"
+    },
+    {
+      "name": "yishu-modules",
+      "type": "Link",
+      "target": "yishu-modules/LOOKME.json",
+      "description": "易书组件依赖"
+    },
+    {
+      "name": "yishu-web",
+      "description": "易书web项目"
+    },
+    {
+      "name": "yishu.sql",
+      "description": "项目数据库表结构文件"
+    }
+  ]
+}

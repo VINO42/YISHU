@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysUserPublishBookRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysUserPublishBookRecordEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="contract" property="contract"/>
+        <result column="remark" property="remark"/>
+        <result column="book_id" property="bookId"/>
+        <result column="publish_date" property="publishDate"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+        <result column="region_id" property="regionId"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, contract, remark, book_id, publish_date, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp, region_id
+    </sql>
+    <select id="selectByBookId" resultType="io.github.vino42.domain.entity.SysUserPublishBookRecordEntity"
+            parameterType="java.lang.Long">
+        select *
+        from sys_user_publish_book_record_table
+        where statu = 1
+          and book_id = #{bookId}
+    </select>
+    <select id="getPageList" resultType="io.github.vino42.domain.dto.SysUserPublishBookRecorDTO">
+        SELECT
+        p.user_id as userId,
+        a.nick_name as nickName,
+        a.union_id as unionId,
+        a.avatar as avatar,
+        b.title as title,
+        b.book_intro as bookIntro,
+        region.name as regionName,
+        b.pic as pic,
+        b.isbn as isbn,
+        p.contract as contract,
+        p.remark as remark,
+        p.book_id as bookId,
+        p.publish_date as publishDate,
+        p.id as id,
+        p.statu as statu,
+        p.create_time as createTime,
+        p.update_time as updateTime
+        FROM
+        sys_user_publish_book_record_table p
+        LEFT JOIN sys_book_table b ON b.id = p.book_id
+        LEFT JOIN sys_user u ON u.id = p.user_id
+        LEFT JOIN sys_account a ON a.user_id = u.id
+        LEFT JOIN sys_region_geo region ON p.region_id= region.id
+        WHERE
+        <if test="data.title !='' and data.title!=null">
+            ( b.title like concat('%',#{data.title},'%')
+
+            or b.isbn=#{data.title}) AND
+        </if>
+        p.statu = 1
+        AND b.statu=1
+        AND a.statu=1
+        <if test="data.userId !='' and data.userId!=null">
+            and p.user_id =#{data.userId}
+        </if>
+
+        <if test="data.unionId !='' and data.unionId!=null">
+            and a.union_id=#{data.unionId}
+        </if>
+        <if test="data.regionId !='' and data.regionId!=null">
+            and p.region_id=#{data.regionId}
+        </if>
+        <if test="data.nickName !='' and data.nickName!=null">
+            and a.nick_name like concat('%',#{data.nickName},'%')
+        </if>
+        order by p.create_time DESC
+        limit #{start},#{size}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer"
+            parameterType="io.github.vino42.domain.dto.SysUserPublishBookRecorDTO">
+        SELECT
+        count(0)
+        FROM
+        sys_user_publish_book_record_table p
+        LEFT JOIN sys_book_table b ON b.id = p.book_id
+        LEFT JOIN sys_user u ON u.id = p.user_id
+        LEFT JOIN sys_account a ON a.user_id = u.id
+        WHERE
+        <if test="data.title !='' and data.title!=null">
+            ( b.title like concat('%',#{data.title},'%')
+
+            or b.isbn=#{data.title}) AND
+        </if>
+        p.statu = 1
+        AND b.statu=1
+        AND a.statu=1
+        <if test="data.userId !='' and data.userId!=null">
+            and p.user_id =#{data.userId}
+        </if>
+        <if test="data.unionId !='' and data.unionId!=null">
+            and a.union_id=#{data.unionId}
+        </if>
+        <if test="data.regionId !='' and data.regionId!=null">
+            and p.region_id=#{data.regionId}
+        </if>
+        <if test="data.nickName !='' and data.nickName!=null">
+            and a.nick_name like concat('%',#{data.nickName},'%')
+        </if>
+    </select>
+    <select id="getPublishById" resultType="io.github.vino42.domain.dto.SysUserPublishBookRecorDTO">
+        SELECT p.user_id      as userId,
+               a.nick_name    as nickName,
+               a.union_id     as unionId,
+               a.avatar       as avatar,
+               b.title        as title,
+               b.book_intro        as bookIntro,
+               region.name as regionName,
+               b.pic          as pic,
+               b.isbn         as isbn,
+               p.contract     as contract,
+               p.remark       as remark,
+               p.book_id      as bookId,
+               p.publish_date as publishDate,
+               p.id           as id,
+               p.statu        as statu,
+               p.create_time  as createTime,
+               p.update_time  as updateTime
+        FROM sys_user_publish_book_record_table p
+                 LEFT JOIN sys_book_table b ON b.id = p.book_id
+                 LEFT JOIN sys_user u ON u.id = p.user_id
+                 LEFT JOIN sys_account a ON a.user_id = u.id
+                 LEFT JOIN sys_region_geo region ON p.region_id= region.id
+
+        WHERE
+              p.statu = 1
+          AND b.statu = 1
+          AND a.statu = 1
+          AND p.id = #{id}
+    </select>
+    <select id="getCountByUserIdAndBookId" resultType="java.lang.Integer">
+        select count(0)
+        from sys_user_publish_book_record_table
+        where user_id = #{userId}
+          and book_id = #{id}
+          and statu = 1
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+{
+  "description": "易书组件",
+  "children": [
+    {
+      "name": "yishu-auth",
+      "description": "权限依赖"
+    },
+    {
+      "name": "yishu-dao",
+      "description": "dao层组件"
+    },
+    {
+      "name": "yishu-domain",
+      "description": "domain层依赖"
+    },
+    {
+      "name": "yishu-service",
+      "description": "服务层封装依赖"
+    },
+    {
+      "name": "yishu-facade",
+      "description": "facade层封装组件"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysBookCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysBookCategoryEntity">
+        <id column="id" property="id"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="category_code" property="categoryCode"/>
+        <result column="cls_code" property="clsCode"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+        <result column="parent_code" property="parentCode"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, category_name, category_code, parent_code, cls_code, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <select id="getByCode" resultType="io.github.vino42.domain.entity.SysBookCategoryEntity"
+            parameterType="java.lang.String">
+        select * from sys_book_category_table where statu=1 and category_code=#{categoryCode}
+    </select>
+</mapper>

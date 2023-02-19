@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysUserEntity">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="real_name" property="realName"/>
+        <result column="mobile" property="mobile"/>
+        <result column="age" property="age"/>
+        <result column="gender" property="gender"/>
+        <result column="birthday" property="birthday"/>
+        <result column="id_card" property="idCard"/>
+        <result column="id_card_type" property="idCardType"/>
+        <result column="addr" property="addr"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="region_code" property="regionCode"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="region" property="region"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , code, real_name, mobile, age, gender, birthday, id_card, id_card_type, addr, province_code, city_code, region_code, province, city, region, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <!--  p, alice, data1, read  -->
+    <select id="getCasbinUserResourcePermissionModel"
+            resultType="io.github.vino42.domain.dto.CasbinUserResourcePermissionModel">
+        select u.id AS user_id, IFNULL(sr.url, sp.perm) as resourcePath, sp.perm as permission
+        from sys_user u
+                 LEFT JOIN rel_user_user_group rur ON u.id = rur.user_id
+                 LEFT JOIN rel_user_group_role ugr ON rur.user_group_id=ugr.user_group_id
+                  LEFT JOIN rel_role_permission_group rpg on rpg.role_id = ugr.role_id
+                 LEFT JOIN rel_permission_group_permission pgp on pgp.permission_group_id = rpg.permission_group_id
+                 LEFT JOIN rel_permission_resource rpr ON rpr.permission_id = pgp.permission_id
+                 LEFT JOIN sys_permission sp ON rpr.permission_id = sp.id
+                 LEFT JOIN sys_resource sr ON sr.id = rpr.resource_id
+        WHERE 1 = 1
+          AND u.statu = 1
+          AND sr.statu = 1
+          AND rur.statu = 1
+          AND ugr.statu = 1
+          AND rpg.statu = 1
+          AND pgp.statu = 1
+          AND rpr.statu = 1
+          AND sp.statu = 1
+    </select>
+    <!--g, alice, data_group_admin-->
+    <select id="getCasbinUserRoleModel" resultType="io.github.vino42.domain.dto.CasbinUserRoleModel">
+        select su.id AS user_id, ug.user_group_code AS userGroup
+        from sys_role sr
+                 LEFT JOIN rel_user_group_role ugr ON sr.role_id=ugr.role_id
+                 LEFT JOIN rel_user_user_group  rpg on rpg.user_group_id=ugr.user_group_id
+                 LEFT JOIN sys_user_group  ug on ug.id=ugr.user_group_id
+
+                 LEFT JOIN sys_user su ON su.id = rpg.user_id
+        WHERE 1 = 1
+          AND su.statu = 1
+          AND ugr.statu = 1
+          AND rpg.statu = 1
+          AND ug.statu = 1
+          AND su.statu = 1
+    </select>
+    <!--    g2, data2, data_group-->
+    <select id="getCasbinRoleResourceModel" resultType="io.github.vino42.domain.dto.CasbinRoleResourceModel">
+        select IFNULL(sr.url, sp.perm) as resourcePath, pg.permission_group_code as permissionGroup
+        from sys_user u
+                  LEFT JOIN rel_user_user_group rur ON u.id = rur.user_id
+                 LEFT JOIN rel_user_group_role ugr ON rur.user_group_id=ugr.user_group_id
+                 LEFT JOIN rel_role_permission_group rpg on rpg.role_id = ugr.role_id
+                 LEFT JOIN rel_permission_group_permission pgp on pgp.permission_group_id = rpg.permission_group_id
+                  LEFT JOIN sys_permission_group pg on pg.id = rpg.permission_group_id
+                  LEFT JOIN rel_permission_resource rpr ON rpr.permission_id = pgp.permission_id
+                 LEFT JOIN sys_resource sr ON sr.id = rpr.resource_id
+                 LEFT JOIN sys_permission sp ON rpr.permission_id = sp.id
+        WHERE 1 = 1
+          AND u.statu = 1
+          AND sr.statu = 1
+          AND rur.statu = 1
+          AND ugr.statu = 1
+          AND rpg.statu = 1
+          AND pgp.statu = 1
+          AND pg.statu = 1
+          AND rpr.statu = 1
+          AND sp.statu = 1
+    </select>
+    <select id="getUserByUserMobile" resultType="io.github.vino42.domain.entity.SysUserEntity"
+            parameterType="java.lang.String">
+        select *
+        from sys_user
+        where mobile = #{userMobile}
+          and statu = 1
+    </select>
+    <!--    p, data_group_admin, data_group, write-->
+    <select id="getCasbinUserGroupPermGroupModel"
+            resultType="io.github.vino42.domain.dto.CasbinUserGroupPermGroupModel">
+        SELECT ug.user_group_code as userGroup, pg.permission_group_code as permissionGroup, sp.perm as permission
+        FROM sys_user u
+                 left join rel_user_user_group uug on u.id = uug.user_id
+                 left join sys_user_group ug on uug.user_group_id = ug.id
+                 left join rel_user_group_role ugr on ug.id = ugr.user_group_id
+                 left join rel_role_permission_group rpg on rpg.role_id = ugr.role_id
+                 left join rel_permission_group_permission pgp on rpg.permission_group_id = pgp.permission_group_id
+                 left join sys_permission_group pg on pg.id = pgp.permission_group_id
+                 left join sys_permission sp on sp.id = pgp.permission_id
+        where 1 = 1
+          and u.statu = 1
+          and ug.statu = 1
+          and ugr.statu = 1
+          and rpg.statu = 1
+          and pgp.statu = 1
+          and pg.statu = 1
+          and sp.statu = 1
+    </select>
+    <select id="getByUserId" resultType="io.github.vino42.domain.dto.ResAllocateListDto"
+            parameterType="java.lang.String">
+        SELECT
+            sug.user_group_name AS NAME,
+            sug.id AS id
+        FROM
+            rel_user_user_group ruug
+           LEFT JOIN sys_user_group sug ON ruug.user_group_id = sug.id
+        WHERE
+            ruug.user_id=#{userId}
+          AND sug.statu = 1
+          AND ruug.statu =1
+    </select>
+</mapper>

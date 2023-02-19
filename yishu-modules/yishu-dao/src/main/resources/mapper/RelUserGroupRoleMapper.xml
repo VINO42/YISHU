@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.RelUserGroupRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.RelUserGroupRoleEntity">
+        <id column="id" property="id"/>
+        <result column="user_group_id" property="userGroupId"/>
+        <result column="role_id" property="roleId"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_group_id, role_id, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <update id="removeUserGroupRoleIdByUserId" parameterType="java.lang.Long">
+        update rel_user_group_role
+        set statu=0
+        where user_group_id = #{groupId}
+          and statu = 1
+    </update>
+    <select id="selectUserIdsByUserGroup" resultType="java.lang.String" parameterType="java.lang.Long">
+        SELECT U.id
+        from rel_user_group_role UGR
+                 LEFT JOIN rel_user_user_group UUG ON UGR.user_group_id = UUG.user_group_id
+                 LEFT JOIN sys_user U on UUG.user_id = U.id
+        WHERE U.statu = 1
+          AND UUG.statu = 1
+          AND UGR.statu = 1
+          AND UGR.user_group_id = #{groupId}
+    </select>
+    <select id="selectByRoleIds" resultType="io.github.vino42.domain.entity.RelUserGroupRoleEntity">
+        select * from rel_user_group_role
+        where statu=1
+
+        <if test="roleIds!= null and roleIds.size() >0">
+        and role_id IN
+        <foreach collection="roleIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        </if>
+    </select>
+</mapper>

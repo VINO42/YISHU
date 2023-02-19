@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.RelRolePermissionGroupMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.RelRolePermissionGroupEntity">
+        <id column="id" property="id"/>
+        <result column="role_id" property="roleId"/>
+        <result column="permission_group_id" property="permissionGroupId"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, role_id, permission_group_id, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <update id="removeRolePermissionGroupByRoleId" parameterType="java.lang.String">
+        update rel_role_permission_group
+        set statu=0
+        where statu = 1
+          and role_id = #{roleId}
+    </update>
+    <select id="getByGroupIds" resultType="io.github.vino42.domain.entity.RelRolePermissionGroupEntity"
+            parameterType="java.util.List">
+        select * from rel_role_permission_group
+        where statu=1
+
+        <if test="groupIds!= null and groupIds.size() >0">
+        and permission_group_id IN
+        <foreach collection="groupIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        </if>
+    </select>
+</mapper>

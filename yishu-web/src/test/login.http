@@ -1,0 +1,9 @@
+POST /platform/login HTTP/1.1
+Host: 192.168.3.7:8888
+Content-Type: application/json
+Content-Length: 58
+
+{
+  "username": "18888888888",
+  "password": "123456"
+}

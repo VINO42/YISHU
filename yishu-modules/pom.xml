@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>yishu-domain</module>
+        <module>yishu-dao</module>
+        <module>yishu-service</module>
+        <module>yishu-facade</module>
+        <module>yishu-auth</module>
+    </modules>
+    <parent>
+        <groupId>io.github.viono42</groupId>
+        <artifactId>yishu-bootstrap</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>io.github.vino42</groupId>
+    <artifactId>yishu-modules</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+
+</project>

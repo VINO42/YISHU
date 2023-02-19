@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysPermissionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysPermissionEntity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="perm" property="perm"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, perm,  statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <select id="getPermissionsForUser" resultType="java.lang.String" parameterType="java.lang.Long">
+        select   IFNULL(sr.url, sp.perm)
+        from sys_user u
+                 LEFT JOIN rel_user_user_group rur ON u.id = rur.user_id
+                 LEFT JOIN rel_user_group_role ugr ON rur.user_group_id=ugr.user_group_id
+                 LEFT JOIN rel_role_permission_group rpg on rpg.role_id = ugr.role_id
+                 LEFT JOIN rel_permission_group_permission pgp on pgp.permission_group_id = rpg.permission_group_id
+                 LEFT JOIN rel_permission_resource rpr ON rpr.permission_id = pgp.permission_id
+                 LEFT JOIN sys_permission sp ON rpr.permission_id = sp.id
+                 LEFT JOIN sys_resource sr ON sr.id = rpr.resource_id
+        WHERE 1 = 1
+          AND u.statu = 1
+          AND rur.statu = 1
+          AND ugr.statu = 1
+          AND rpg.statu = 1
+          AND pgp.statu = 1
+          AND rpr.statu = 1
+          AND sp.statu = 1
+          AND sr.statu = 1
+          AND u.id=#{userId}
+    </select>
+    <select id="getPermissionsByUserGroupForUser" resultType="java.lang.String"
+            parameterType="java.util.HashSet">
+        SELECT
+            IFNULL( sr.url, sp.perm )
+        FROM
+            rel_role_permission_group rpg
+                LEFT JOIN rel_user_group_role ugr ON rpg.role_id = ugr.role_id
+                LEFT JOIN rel_permission_group_permission pgp ON pgp.permission_group_id = rpg.permission_group_id
+                LEFT JOIN rel_permission_resource rpr ON rpr.permission_id = pgp.permission_id
+                LEFT JOIN sys_permission sp ON rpr.permission_id = sp.id
+                LEFT JOIN sys_resource sr ON sr.id = rpr.resource_id
+        WHERE
+            1 = 1
+          AND rpg.statu = 1
+
+        <if test="userGroupIds!= null and userGroupIds.size() >0">
+            AND rpg.role_id  IN
+            <foreach collection="userGroupIds" item="value" separator="," open="(" close=")">
+                #{value}
+            </foreach>
+        </if>
+          AND pgp.statu = 1
+          AND rpr.statu = 1
+          AND sp.statu = 1
+          AND sr.statu = 1
+    </select>
+</mapper>

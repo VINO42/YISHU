@@ -1,0 +1,41 @@
+{
+  "description": "同城易书公共组件",
+  "children": [
+    {
+      "name": "yishu-base",
+      "description": "基础依赖"
+    },
+    {
+      "name": "yishu-book",
+      "description": "图书依赖"
+    },
+    {
+      "name": "yishu-cache",
+      "description": "缓存依赖"
+    },
+    {
+      "name": "yishu-core",
+      "description": "核心依赖"
+    },
+    {
+      "name": "yishu-logger",
+      "description": "日志依赖"
+    },
+    {
+      "name": "yishu-minio",
+      "description": "oss依赖"
+    },
+    {
+      "name": "yishu-mybatis",
+      "description": "mybatis持久层依赖"
+    },
+    {
+      "name": "yishu-redis",
+      "description": "redis依赖"
+    },
+    {
+      "name": "yishu-websocket",
+      "description": "websocket依赖"
+    }
+  ]
+}

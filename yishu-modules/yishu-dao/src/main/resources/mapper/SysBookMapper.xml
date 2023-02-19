@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysBookMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysBookEntity">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="book_intro" property="bookIntro"/>
+        <result column="pic" property="pic"/>
+        <result column="douban_url" property="doubanUrl"/>
+        <result column="translator" property="translator"/>
+        <result column="author" property="author"/>
+        <result column="isbn" property="isbn"/>
+        <result column="publish" property="publish"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id, title, book_intro, pic, douban_url, translator, author, isbn, publish, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <select id="getByIsbn" resultType="io.github.vino42.domain.entity.SysBookEntity"
+            parameterType="java.lang.String">
+        select * from sys_book_table where statu=1 and isbn=#{isbn}
+    </select>
+</mapper>

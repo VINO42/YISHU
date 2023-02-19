@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.vino42.dao.mapper.SysAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.github.vino42.domain.entity.SysAccountEntity">
+        <id column="id" property="id"/>
+        <result column="mobile" property="mobile"/>
+        <result column="passwd" property="passwd"/>
+        <result column="union_id" property="unionId"/>
+        <result column="open_id" property="openId"/>
+        <result column="avatar" property="avatar"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="user_id" property="userId"/>
+        <result column="account_type" property="accoutType"/>
+        <result column="statu" property="statu"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+        <result column="version_stamp" property="versionStamp"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, mobile, passwd, union_id,open_id, account_type, avatar, nick_name, user_id, statu, create_time, update_time, create_by, create_name, update_by, update_name, version_stamp
+    </sql>
+    <select id="getAccountByUserMobile" resultType="io.github.vino42.domain.entity.SysAccountEntity"
+            parameterType="java.lang.String">
+        SELECT * FROM sys_account sa where mobile = #{userMobile}
+        <if test="accountType!=null">
+            and account_type=#{accountType}
+        </if>
+        and statu = 1
+    </select>
+    <select id="getAccountByUnionIdAndOpenIdAndAccountType"
+            resultType="io.github.vino42.domain.entity.SysAccountEntity">
+        SELECT * FROM sys_account
+        WHERE ( 1=1
+        <if test="unionId != '' and unionId !=null">
+            AND union_id=#{unionId}
+        </if>
+        <if test="openId != '' and openId !=null">
+            AND open_id =#{openId}
+        </if>
+        )
+        AND statu=1
+        AND account_type=#{accountType}
+    </select>
+</mapper>

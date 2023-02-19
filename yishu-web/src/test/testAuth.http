@@ -1,0 +1,3 @@
+GET /platform/sysUser/getUserGroupIdList?userId=1 HTTP/1.1
+Host: 127.0.0.1:8888
+X-Token-Header: 5200dc09a514db596cdaf29d5dfea7e5
