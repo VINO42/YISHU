@@ -14,7 +14,7 @@ BTU Capstone Project
     * minio
     * redis
    本地启动时,以上的基础设施如mysql8、minio、redis建议使用docker本地搭建
-    
+   开发仓库：`https://github.com/VINO42/YiShu-DEV`
 * 本地运行
     
     * 构建
